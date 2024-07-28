@@ -1,0 +1,17 @@
+[
+    {
+        "email" : "rahulkumar@gmail.com",
+        "password" : "rahulkumar",
+        "role" : "admin"
+    },
+    {
+        "email" : "bunbunlove05@gmail.com",
+        "password" : "bunbun",
+        "role" : "normal"
+    },
+    {
+        "email" : "soumyam076@gmail.com",
+        "password" : "soumyam076",
+        "role" : "normal"
+    }
+]
