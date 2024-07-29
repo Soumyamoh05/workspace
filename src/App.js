@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import Signup from "./pages/SignupPage";
 import ContactUsPage from "./pages/ContactUsPage";
 import ErrorPage from "./pages/ErrorPage";
+import SessionPage from "./pages/SessionPage";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path = "/signin" element = {<Signup />} />
           <Route path = "/contact" element = {<ContactUsPage />} />
           <Route path = "/errorwhilelogin" element = {<ErrorPage />} />
+          <Route path = "/sessionexpired" element = {<SessionPage />} />
         </Routes>
       </BrowserRouter>
     </>

@@ -31,15 +31,15 @@ function LoginContent()
     const [goToError , setGoToError] = useState(false);
     if (goToHome)
     {
-        return <Navigate to = "contact" />;
+        return <Navigate to = "/contact" />;
     }
     if (goTosignin)
     {
-        return <Navigate to = "signin" />;
+        return <Navigate to = "/signin"/>;
     }
     if (goToError)
     {
-        return <Navigate to = "errorwhilelogin" />;
+        return <Navigate to = "/sessionexpired" />;
     }
     const handleLogin = (e) => {
         e.preventDefault();
