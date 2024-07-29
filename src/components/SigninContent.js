@@ -15,7 +15,8 @@ function SigninContent()
         <>
             <Topbar />
             <div className="grid-container">
-                <div className="grid-item1">
+                <form>
+                    <div className="grid-item1">
                     <br />
                     {image ? <img src = {URL.createObjectURL(image)} alt = "dp" className="image"/> : <img src= {profile} alt = "pic" className = "image" id = "dp" /> }
                     <label htmlFor = "upload" ><i className="fa-solid fa-plus icon" ></i></label>
@@ -66,6 +67,7 @@ function SigninContent()
                     <br/>
                     <button className = "signin">Sign-in</button>
                 </div>
+                </form>
             </div>
         </>
     )
