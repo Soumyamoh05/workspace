@@ -86,3 +86,12 @@
 {
     border : 1px solid #8b704b;
 }
+.edit
+{
+    font-size: 10px;
+    display : relative;
+    float :right;
+    color : grey;
+    background-color: white;
+    border : none;
+}

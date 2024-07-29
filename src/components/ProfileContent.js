@@ -1,30 +1,14 @@
 import React from "react";
 import Topbar from "./Topbar";
-import profile from "../assets/profile.png";
 import "../css/signin.css";
-import { useRef,useState } from "react";
+import { useState,useEffect } from "react";
 import { Navigate } from "react-router-dom";
 
 function ProfileContent()
 {
-    const [image , setImage] = useState("");
-    const handleImageChange = (e) =>
-    {
-        setImage(e.target.files[0]);
-        const file = e.target.files[0];
-        getBase64(file).then((base64) =>
-        {
-            localStorage["image"] = base64 ;
-        });
-    };
-    const [goToProfile , setGoToProfile] = useState(false);
-    if (goToProfile)
-    {
-        return <Navigate to = "profile" />;
-    }
-
-    
-    const [userSignin, setUserSignin] = useState({
+    const img = localStorage.getItem("image");
+    const[isEditing ,setIsEditing] = useState(false);
+    const[userProfile , setUserProfile] = useState({
         name : "",
         email : "",
         password : "",
@@ -34,86 +18,144 @@ function ProfileContent()
         state : "",
         zipcode : ""
     });
-    let name,value;
-    const handleInput = (e) => {
-        name = e.target.name;
-        value = e.target.value;
-        setUserSignin({...userSignin , [name]:value});
+
+    useEffect(() => {
+        const storedProfile = JSON.parse(localStorage.getItem("signin")) || {        
+            name : "",
+            email : "",
+            password : "",
+            role : "",
+            number : "",
+            address : "",
+            state : "",
+            zipcode : ""
+        };
+        setUserProfile(storedProfile);
+    },[]);
+    const handleEdit = () =>
+    {
+        setIsEditing(true);
     };
-    const handleSigin = (e) =>
+    const handleSave = () =>
     {
-        e.preventDefault();
-        localStorage.setItem ("signin",JSON.stringify(userSignin));
-        return setGoToProfile(true) ;
-    }
-    const getBase64 = (file) =>
-    {
-        return new Promise((resolve,reject) =>{
-            const reader = new FileReader()
-            reader.onload = () => resolve(reader.result)
-            reader.onabort = (error) => reject(error)
-            reader.readAsDataURL(file)
-        })
-    }
+        localStorage.setItem("signin",JSON.stringify(userProfile));
+        setIsEditing(false);
+    };
+    const handleChange = (e) => {
+        const{name,value} = e.target;
+        setUserProfile((prevProfile) => ({...prevProfile , [name]:value,}));
+    };
     return (
         <>
             <Topbar />
-            <div className="grid-container">
-                <form onSubmit={handleSigin}>
+            {isEditing? (
+                <div className="grid-container">
+                <form>
                     <div className="grid-item1">
                     <br />
                     {/* <img src = {profile} className = "image" alt = "dp" /> */}
-                    {image ? <img src = {URL.createObjectURL(image)} alt = "dp" className="image"/> : <img src= {profile} alt = "pic" className = "image" id = "dp" /> }
-                    <label htmlFor = "upload" ><i className="fa-solid fa-plus icon" ></i></label>
-                    <input type = "file" accept = "image/jpeg , image/jpg , image/png" id = "upload" className="display" name = "file" onChange={handleImageChange}/>
+                    <img src= {img} alt = "pic" className = "image" id = "dp" /> 
+                    <label htmlFor = "upload" hidden><i className="fa-solid fa-plus icon"></i></label>
+                    <input type = "file" accept = "image/jpeg , image/jpg , image/png" id = "upload" className="display" name = "file" onChange={handleChange}/>
                 </div>
                 <div className="grid-item2">
                     <label htmlFor="name" className= "input">Name</label>
                     <br />
-                    <input type = "text" id = "name" placeholder = "Name" className="input1" name = "name" onChange={handleInput} value = {userSignin.name} required/>
+                    <input type = "text" id = "name" placeholder = "Name" className="input1" name = "name" value = {userProfile.name ? userProfile.name : "Na"} onChange={handleChange} required/>
                     <br /><br/>
                     <label htmlFor="Email" className="input">Email</label>
                     <br />
-                    <input type = "text" id = "Email" placeholder = "abc@gmail.com" className="input1" name = "email" onChange={handleInput} value = {userSignin.email} required/>
+                    <input type = "text" id = "Email" placeholder = "abc@gmail.com" className="input1" name = "email" value = {userProfile.email? userProfile.email : "Na"} onChange={handleChange} required/>
                     <br /><br/>
                     <label htmlFor="password" className="input">Password</label>
                     <br />
-                    <input type = "password" id = "password" placeholder = "**********" className="input1" name = "password" onChange={handleInput} value = {userSignin.password} required/>
+                    <input type = "password" id = "password" placeholder = "**********" className="input1" name = "password" value = {userProfile.password? userProfile.password : "Na"} onChange={handleChange} required/>
                     <br /><br/>
                     <label htmlFor = "genre" className = "input">Role</label>
                     <br />
-                    <input list = "genre" className = "input1" name = "role" onChange={handleInput} value = {userSignin.role} required /> <br /><br />
-                    <datalist id = "genre">
-                        <option value = "Admin User"></option>
-                        <option value = "Normal User"></option>
-                    </datalist>
+                    <input type = "text" className = "input1" name = "role" value = {userProfile.role? userProfile.role : "Na"} onChange={handleChange} required/> 
+                    <br /><br />
                     <label htmlFor="number" className="input">Phone Number</label>
                     <br />
-                    <input type = "text" id = "number" placeholder = "0123456789" className="input1" name = "number" onChange={handleInput} value = {userSignin.number}required />
+                    <input type = "text" id = "number" placeholder = "0123456789" className="input1" name = "number" value = {userProfile.number? userProfile.number : "Na"} onChange={handleChange} required />
                     <br /><br/>
                     <label htmlFor="address" className="input">Address</label>
                     <br />
-                    <input type = "text" id = "address" placeholder = "xyz street...." className="input1" name = "address" onChange={handleInput} value = {userSignin.address} required />
+                    <input type = "text" id = "address" placeholder = "xyz street...." className="input1" name = "address" value = {userProfile.address? userProfile.address : "Na"} onChange={handleChange} required />
                     <br /><br/>
                     <div className="ok">
                         <span>
                             <label htmlFor="state" className="input grid-item3">State</label>
                             <br />
-                            <input type = "text" id = "state" placeholder = "Odisha" className="grid-input1 grid-item3" name = "state" onChange={handleInput} value = {userSignin.state} required />
+                            <input type = "text" id = "state" placeholder = "Odisha" className="grid-input1 grid-item3" name = "state" value = {userProfile.state? userProfile.state : "Na"} onChange={handleChange} required />
                             <br /><br/>
                         </span>
                         <span>
                             <label htmlFor="zipcode" className="input grid-item3">Zip Code</label>
                             <br />
-                            <input type = "text" id = "zipcode" placeholder = "751024" className="grid-input1 grid-item3" name = "zipcode" onChange={handleInput} value = {userSignin.zipcode} required />
+                            <input type = "text" id = "zipcode" placeholder = "751024" className="grid-input1 grid-item3" name = "zipcode" value = {userProfile.zipcode? userProfile.zipcode : "Na"} onChange={handleChange} required />
                             <br /><br/>
                         </span>
                     </div>
                     <br/>
-                    <button className = "signin" type="submit">Sign-in</button>
+                    <button onClick={handleSave} className = "signin" >Save changes</button>
                 </div>
                 </form>
             </div>
+            ):(
+            <div className="grid-container">
+                <form>
+                    <div className="grid-item1">
+                    <br />
+                    {/* <img src = {profile} className = "image" alt = "dp" /> */}
+                    <img src= {img} alt = "pic" className = "image" id = "dp" /> 
+                    <label htmlFor = "upload" hidden><i className="fa-solid fa-plus icon"></i></label>
+                    <input type = "file" accept = "image/jpeg , image/jpg , image/png" id = "upload" className="display" name = "file"  readOnly/>
+                </div>
+                <div className="grid-item2">
+                    <button className="edit" onClick={handleEdit}>Edit  <i className="fa-solid fa-pen"></i></button>
+                    <label htmlFor="name" className= "input">Name</label>
+                    <br />
+                    <input type = "text" id = "name" placeholder = "Name" className="input1" name = "name" value = {userProfile.name ? userProfile.name : "Na"} readOnly required/>
+                    <br /><br/>
+                    <label htmlFor="Email" className="input">Email</label>
+                    <br />
+                    <input type = "text" id = "Email" placeholder = "abc@gmail.com" className="input1" name = "email" value = {userProfile.email? userProfile.email : "Na"} readOnly required/>
+                    <br /><br/>
+                    <label htmlFor="password" className="input">Password</label>
+                    <br />
+                    <input type = "password" id = "password" placeholder = "**********" className="input1" name = "password" value = {userProfile.password? userProfile.password : "Na"} readOnly required/>
+                    <br /><br/>
+                    <label htmlFor = "genre" className = "input">Role</label>
+                    <br />
+                    <input type = "text" className = "input1" name = "role" value = {userProfile.role? userProfile.role : "Na"} required readOnly/> 
+                    <br /><br />
+                    <label htmlFor="number" className="input">Phone Number</label>
+                    <br />
+                    <input type = "text" id = "number" placeholder = "0123456789" className="input1" name = "number" value = {userProfile.number? userProfile.number : "Na"}required readOnly />
+                    <br /><br/>
+                    <label htmlFor="address" className="input">Address</label>
+                    <br />
+                    <input type = "text" id = "address" placeholder = "xyz street...." className="input1" name = "address" value = {userProfile.address? userProfile.address : "Na"} readOnly required />
+                    <br /><br/>
+                    <div className="ok">
+                        <span>
+                            <label htmlFor="state" className="input grid-item3">State</label>
+                            <br />
+                            <input type = "text" id = "state" placeholder = "Odisha" className="grid-input1 grid-item3" name = "state" value = {userProfile.state? userProfile.state : "Na"} readOnly required />
+                            <br /><br/>
+                        </span>
+                        <span>
+                            <label htmlFor="zipcode" className="input grid-item3">Zip Code</label>
+                            <br />
+                            <input type = "text" id = "zipcode" placeholder = "751024" className="grid-input1 grid-item3" name = "zipcode" value = {userProfile.zipcode? userProfile.zipcode : "Na"} readOnly required />
+                            <br /><br/>
+                        </span>
+                    </div>
+                    <br/>
+                </div>
+                </form>
+            </div>)}
         </>
     )
 }

@@ -2,7 +2,7 @@ import React from "react";
 import Topbar from "./Topbar";
 import profile from "../assets/profile.png";
 import "../css/signin.css";
-import { useRef,useState } from "react";
+import { useState } from "react";
 import { Navigate } from "react-router-dom";
 
 function SigninContent()
@@ -17,11 +17,7 @@ function SigninContent()
             localStorage["image"] = base64 ;
         });
     };
-    const [goToProfile , setGoToProfile] = useState(false);
-    if (goToProfile)
-    {
-        return <Navigate to = "profile" />;
-    }
+
 
     const [userSignin, setUserSignin] = useState({
         name : "",
@@ -39,11 +35,17 @@ function SigninContent()
         value = e.target.value;
         setUserSignin({...userSignin , [name]:value});
     };
+
+    const [goToNext , setGoToNext] = useState(false);
+    if (goToNext)
+    {
+        return <Navigate to = "/profile" />
+    }
     const handleSigin = (e) =>
     {
         e.preventDefault();
         localStorage.setItem ("signin",JSON.stringify(userSignin));
-        return setGoToProfile(true) ;
+        return setGoToNext(true);
     }
     const getBase64 = (file) =>
     {
@@ -109,7 +111,7 @@ function SigninContent()
                         </span>
                     </div>
                     <br/>
-                    <button className = "signin" type="submit">Sign-in</button>
+                    <button type="submit" className = "signin" >Sign-in</button>
                 </div>
                 </form>
             </div>
