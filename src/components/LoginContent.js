@@ -15,14 +15,15 @@ function LoginContent()
     };
 
     //for storing users input
-    const [user , setUser] = useState(
-        {email : "", pass : ""}
+    const [userLogin , setUserLogin] = useState(
+        {email : "", 
+        pass : ""}
     );
     let name,value;
     const handleInput = (e) => {
         name = e.target.name;
         value = e.target.value;
-        setUser({...user , [name]:value});
+        setUserLogin({...userLogin , [name]:value});
     };
 
     //for comparing the user's input with the data stored in data.json
@@ -43,9 +44,9 @@ function LoginContent()
     }
     const handleLogin = (e) => {
         e.preventDefault();
-        localStorage.setItem ("login",JSON.stringify(user));
+        localStorage.setItem ("login",JSON.stringify(userLogin));
         userdata.map(data => {
-            if((data.email === user.email)&&(data.password === user.pass))
+            if((data.email === userLogin.email)&&(data.password === userLogin.pass))
             {
                 if(data.role === "admin")
                 {
@@ -78,13 +79,13 @@ function LoginContent()
                     <form onSubmit={handleLogin}>
                         <label htmlFor="email" className="logininput">Email</label>
                         <br/>
-                        <input type = "text" id = "email" name = "email" placeholder = "abc@gmail.com" className="logininput1" value = {user.email} onChange={handleInput} required/>
+                        <input type = "text" id = "email" name = "email" placeholder = "abc@gmail.com" className="logininput1" value = {userLogin.email} onChange={handleInput} required/>
                         <br /><br />
                         <label htmlFor="password">
                             <span className="logininput">Password</span>
                             <span className="input4">Forgot password?</span>
                         </label>
-                        <input type = {isPassword ? "text":"password"} id = "password" name = "pass" placeholder = "**************" className="logininput1" value = {user.password} onChange={handleInput} required/>
+                        <input type = {isPassword ? "text":"password"} id = "password" name = "pass" placeholder = "**************" className="logininput1" value = {userLogin.password} onChange={handleInput} required/>
                         <button onClick={handleChange} className="eye">{isPassword?<i className="fa-solid fa-eye-slash"></i>:<i className="fa-solid fa-eye"></i>}</button>
                         <br /><br />
                         <button className="login align" type = "submit" >Log-in</button>

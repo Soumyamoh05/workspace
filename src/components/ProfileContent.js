@@ -5,7 +5,7 @@ import "../css/signin.css";
 import { useRef,useState } from "react";
 import { Navigate } from "react-router-dom";
 
-function SigninContent()
+function ProfileContent()
 {
     const [image , setImage] = useState("");
     const handleImageChange = (e) =>
@@ -23,6 +23,7 @@ function SigninContent()
         return <Navigate to = "profile" />;
     }
 
+    
     const [userSignin, setUserSignin] = useState({
         name : "",
         email : "",
@@ -117,4 +118,4 @@ function SigninContent()
     )
 }
 
-export default SigninContent;
+export default ProfileContent;
