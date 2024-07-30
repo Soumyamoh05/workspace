@@ -7,6 +7,7 @@ import ContactUsPage from "./pages/ContactUsPage";
 import ErrorPage from "./pages/ErrorPage";
 import SessionPage from "./pages/SessionPage";
 import ProfilePage from "./pages/ProfilePage";
+import UserHomeContent from "./components/UserHomeContent";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path = "/errorwhilelogin" element = {<ErrorPage />} />
           <Route path = "/sessionexpired" element = {<SessionPage />} />
           <Route path = "/profile" element = {<ProfilePage />} />
+          <Route path = "/userhome" element = {<UserHomeContent />} />
         </Routes>
       </BrowserRouter>
     </>

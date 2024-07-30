@@ -3,10 +3,12 @@ import Topbar from "./Topbar";
 import "../css/signin.css";
 import { useState,useEffect } from "react";
 import { Navigate } from "react-router-dom";
+import profile from "../assets/profile.png";
 
 function ProfileContent()
 {
-    const img = localStorage.getItem("image");
+    const [image , setImage] = useState("");
+    // const img = localStorage.getItem("image");
     const[isEditing ,setIsEditing] = useState(false);
     const[userProfile , setUserProfile] = useState({
         name : "",
@@ -20,7 +22,8 @@ function ProfileContent()
     });
 
     useEffect(() => {
-        const storedProfile = JSON.parse(localStorage.getItem("signin")) || {        
+        const storedProfile = JSON.parse(localStorage.getItem("signin")) || {     
+            profilePic : "",   
             name : "",
             email : "",
             password : "",
@@ -36,8 +39,12 @@ function ProfileContent()
     {
         setIsEditing(true);
     };
-    const handleSave = () =>
+    const handleSave = (e) =>
     {
+        e.preventDefault();
+        if (!userProfile.profilePic){
+            userProfile.profilePic = profile;
+        }
         localStorage.setItem("signin",JSON.stringify(userProfile));
         setIsEditing(false);
     };
@@ -45,6 +52,19 @@ function ProfileContent()
         const{name,value} = e.target;
         setUserProfile((prevProfile) => ({...prevProfile , [name]:value,}));
     };
+    const handleImageChange = (e) =>
+    {
+        setImage(e.target.files[0]);
+        const file = e.target.files[0];
+        const reader = new FileReader()
+        reader.onloadend = () =>{
+            setUserProfile({...userProfile, profilePic : reader.result });
+        };
+        if(file) {
+            reader.readAsDataURL(file);
+        }
+    };
+    
     return (
         <>
             <Topbar />
@@ -53,10 +73,9 @@ function ProfileContent()
                 <form>
                     <div className="grid-item1">
                     <br />
-                    {/* <img src = {profile} className = "image" alt = "dp" /> */}
-                    <img src= {img} alt = "pic" className = "image" id = "dp" /> 
-                    <label htmlFor = "upload" hidden><i className="fa-solid fa-plus icon"></i></label>
-                    <input type = "file" accept = "image/jpeg , image/jpg , image/png" id = "upload" className="display" name = "file" onChange={handleChange}/>
+                    <img src = {userProfile.profilePic} className = "image" alt = "dp" />
+                    <label htmlFor = "upload" ><i className="fa-solid fa-plus icon"></i></label>
+                    <input type = "file" accept = "image/jpeg , image/jpg , image/png" id = "upload" className="display" name = "file" onChange={handleImageChange}/>
                 </div>
                 <div className="grid-item2">
                     <label htmlFor="name" className= "input">Name</label>
@@ -107,8 +126,9 @@ function ProfileContent()
                 <form>
                     <div className="grid-item1">
                     <br />
+                    <img src = {userProfile.profilePic} className = "image" alt = "dp" />
                     {/* <img src = {profile} className = "image" alt = "dp" /> */}
-                    <img src= {img} alt = "pic" className = "image" id = "dp" /> 
+                    {/* {image ? <img src = {img} alt = "dp" className="image"/> : <img src= {profile} alt = "pic" className = "image" id = "dp" /> } */}
                     <label htmlFor = "upload" hidden><i className="fa-solid fa-plus icon"></i></label>
                     <input type = "file" accept = "image/jpeg , image/jpg , image/png" id = "upload" className="display" name = "file"  readOnly/>
                 </div>

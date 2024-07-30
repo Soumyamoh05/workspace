@@ -10,15 +10,23 @@ function LoginContent()
 {
     //for password
     const [isPassword,setIsPassword] = useState(false);
-    const handleChange = () => {
+    const handleChange = (e) => {
+        e.preventDefault();
         setIsPassword(!isPassword);
     };
 
     //for storing users input
-    const [userLogin , setUserLogin] = useState(
-        {email : "", 
-        pass : ""}
-    );
+    const [userLogin , setUserLogin] = useState({
+        profilePic : "",
+        name : "",
+        email : "",
+        password : "",
+        role : "",
+        number : "",
+        address : "",
+        state : "",
+        zipcode : ""
+    });
     let name,value;
     const handleInput = (e) => {
         name = e.target.name;
@@ -27,41 +35,56 @@ function LoginContent()
     };
 
     //for comparing the user's input with the data stored in data.json
-    const [goToHome , setGoToHome] = useState(false);
+    const [goToUserHome , setGoToUserHome] = useState(false);
     const[goTosignin , setGoTosignin] = useState(false);
     const [goToError , setGoToError] = useState(false);
-    if (goToHome)
+    if (goToUserHome)
     {
-        return <Navigate to = "/contact" />;
+        return <Navigate to = "/userhome" />;
     }
     if (goTosignin)
     {
-        return <Navigate to = "/signin" />;
+        return <Navigate to = "/profile" />;
     }
     if (goToError)
     {
         return <Navigate to = "/errorwhilelogin" />;
     }
+
     const handleLogin = (e) => {
         e.preventDefault();
-        localStorage.setItem ("login",JSON.stringify(userLogin));
         userdata.map(data => {
-            if((data.email === userLogin.email)&&(data.password === userLogin.pass))
+            if((data.email === userLogin.email)&&(data.password === userLogin.password))
             {
-                if(data.role === "admin")
+                const user = userdata.find((user) => (user.email === userLogin.email)&&(user.password === userLogin.password));
+                if(user) {
+                    const loginData = {
+                        email : user.email,
+                        password : user.password,
+                        name : user.name,
+                        role : user.role,
+                        address : user.address,
+                        profilePic : user.profilePic,
+                        number : user.number,
+                        state : user.state,
+                        zipcode : user.zipcode
+                    };
+                    localStorage.setItem ("signin",JSON.stringify(loginData));
+                    setUserLogin(loginData);
+                }
+                if(data.role === "Admin User")
                 {
-                    return (setGoToHome(true));
+                    return (setGoTosignin(true));
                 }
                 else
                 {
-                    return (setGoTosignin(true));
+                    return (setGoToUserHome(true));
                 }
             }
             else
             {
                 return(setGoToError(true));
             }
-            //return null;
         })
     };
 
@@ -85,7 +108,7 @@ function LoginContent()
                             <span className="logininput">Password</span>
                             <span className="input4">Forgot password?</span>
                         </label>
-                        <input type = {isPassword ? "text":"password"} id = "password" name = "pass" placeholder = "**************" className="logininput1" value = {userLogin.password} onChange={handleInput} required/>
+                        <input type = {isPassword ? "text":"password"} id = "password" name = "password" placeholder = "**************" className="logininput1" value = {userLogin.password} onChange={handleInput} required/>
                         <button onClick={handleChange} className="eye">{isPassword?<i className="fa-solid fa-eye-slash"></i>:<i className="fa-solid fa-eye"></i>}</button>
                         <br /><br />
                         <button className="login align" type = "submit" >Log-in</button>
@@ -95,7 +118,6 @@ function LoginContent()
                             <span><Link to = "/signin" className = "input3">Sign up for free</Link></span>
                         </div>
                     </form>
-                    
                 </div>
             </div>
         </>

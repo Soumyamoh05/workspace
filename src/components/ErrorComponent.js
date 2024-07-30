@@ -15,14 +15,22 @@ function LoginContent()
     };
 
     //for storing users input
-    const [user , setUser] = useState(
-        {email : "", pass : ""}
-    );
+    const [userData , setUserData] = useState({
+        profilePic : "",
+        name : "",
+        email : "",
+        password : "",
+        role : "",
+        number : "",
+        address : "",
+        state : "",
+        zipcode : ""
+    });
     let name,value;
     const handleInput = (e) => {
         name = e.target.name;
         value = e.target.value;
-        setUser({...user , [name]:value});
+        setUserData({...userData , [name]:value});
     };
 
     //for comparing the user's input with the data stored in data.json
@@ -43,11 +51,26 @@ function LoginContent()
     }
     const handleLogin = (e) => {
         e.preventDefault();
-        localStorage.setItem ("login",JSON.stringify(user));
         userdata.map(data => {
-            if((data.email === user.email)&&(data.password === user.pass))
+            if((data.email === userData.email)&&(data.password === userData.password))
             {
-                if(data.role === "admin")
+                const user = userdata.find((user) => (user.email === userData.email)&&(user.password === userData.password));
+                if(user) {
+                    const loginData = {
+                        email : user.email,
+                        password : user.password,
+                        name : user.name,
+                        role : user.role,
+                        address : user.address,
+                        profilePic : user.profilePic,
+                        number : user.number,
+                        state : user.state,
+                        zipcode : user.zipcode
+                    };
+                    localStorage.setItem ("signin",JSON.stringify(loginData));
+                    setUserData(loginData);
+                }
+                if(data.role === "Admin User")
                 {
                     return (setGoToHome(true));
                 }
@@ -78,13 +101,13 @@ function LoginContent()
                     <form onSubmit={handleLogin}>
                         <label htmlFor="email" className="logininput">Email</label>
                         <br/>
-                        <input type = "text" id = "email" name = "email" placeholder = "abc@gmail.com" className="logininput1" value = {user.email} onChange={handleInput} required />
+                        <input type = "text" id = "email" name = "email" placeholder = "abc@gmail.com" className="logininput1" value = {userData.email} onChange={handleInput} required />
                         <br /><br />
                         <label htmlFor="password">
                             <span className="logininput">Password</span>
                             <span className="input4">Forgot password?</span>
                         </label>
-                        <input type = {isPassword ? "text":"password"} id = "password" name = "pass" placeholder = "**************" className="logininput1" value = {user.password} onChange={handleInput} required />
+                        <input type = {isPassword ? "text":"password"} id = "password" name = "password" placeholder = "**************" className="logininput1" value = {userData.password} onChange={handleInput} required />
                         <button onClick={handleChange} className="eye">{isPassword?<i className="fa-solid fa-eye-slash"></i>:<i className="fa-solid fa-eye"></i>}</button>
                         <br /><br />
                         <button className="login align" type = "submit" >Log-in</button>

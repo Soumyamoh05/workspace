@@ -8,18 +8,27 @@ import { Navigate } from "react-router-dom";
 function SigninContent()
 {
     const [image , setImage] = useState("");
+    // localStorage["image"] = {profile};
     const handleImageChange = (e) =>
     {
         setImage(e.target.files[0]);
         const file = e.target.files[0];
-        getBase64(file).then((base64) =>
-        {
-            localStorage["image"] = base64 ;
-        });
+        const reader = new FileReader()
+        reader.onloadend = () =>{
+            setUserSignin({...userSignin, profilePic : reader.result });
+        };
+        if(file) {
+            reader.readAsDataURL(file);
+        }
+        // getBase64(file).then((base64) =>
+        // {
+        //     localStorage["image"] = base64 ;
+        // });
     };
 
 
     const [userSignin, setUserSignin] = useState({
+        profilePic : "",
         name : "",
         email : "",
         password : "",
@@ -44,18 +53,21 @@ function SigninContent()
     const handleSigin = (e) =>
     {
         e.preventDefault();
+        if (!userSignin.profilePic){
+            userSignin.profilePic = profile;
+        }
         localStorage.setItem ("signin",JSON.stringify(userSignin));
         return setGoToNext(true);
     }
-    const getBase64 = (file) =>
-    {
-        return new Promise((resolve,reject) =>{
-            const reader = new FileReader()
-            reader.onload = () => resolve(reader.result)
-            reader.onabort = (error) => reject(error)
-            reader.readAsDataURL(file)
-        })
-    }
+    // const getBase64 = (file) =>
+    // {
+    //     return new Promise((resolve,reject) =>{
+    //         const reader = new FileReader()
+    //         reader.onload = () => resolve(reader.result)
+    //         reader.onabort = (error) => reject(error)
+    //         reader.readAsDataURL(file)
+    //     })
+    // }
     return (
         <>
             <Topbar />
@@ -63,8 +75,9 @@ function SigninContent()
                 <form onSubmit={handleSigin}>
                     <div className="grid-item1">
                     <br />
-                    {/* <img src = {profile} className = "image" alt = "dp" /> */}
-                    {image ? <img src = {URL.createObjectURL(image)} alt = "dp" className="image"/> : <img src= {profile} alt = "pic" className = "image" id = "dp" /> }
+                    <img src = {userSignin.profilePic ? userSignin.profilePic : profile} className = "image" alt = "dp" />
+                    {/* {image ? <img src = {URL.createObjectURL(image)} alt = "dp" className="image"/> : <img src= {profile} alt = "pic" className = "image" id = "dp" /> } */}
+
                     <label htmlFor = "upload" ><i className="fa-solid fa-plus icon" ></i></label>
                     <input type = "file" accept = "image/jpeg , image/jpg , image/png" id = "upload" className="display" name = "file" onChange={handleImageChange}/>
                 </div>
